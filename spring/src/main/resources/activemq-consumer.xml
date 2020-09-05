@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!-- 1.配置能够产生connection的connectionfactory，由JMS对应的服务厂商提供 -->
+    <bean id="tagertConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <constructor-arg name="brokerURL" value="tcp://127.0.0.1:61616"/>
+    </bean>
+    <!-- 2.配置spring管理真正connectionfactory的connectionfactory，相当于spring对connectionfactory的一层封装 -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="tagertConnectionFactory"/>
+    </bean>
+    <!-- 3.配置destination -->
+        <!-- 队列目的地 -->
+        <bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+            <constructor-arg value="spring_queue"/>
+        </bean>
+        <!-- 话题目的地 -->
+        <bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+            <constructor-arg value="spring_topic"/>
+        </bean>
+    <!-- 4.配置监听器 -->
+    <bean id="ptp_listener" class="spring.jms.activemq.listener.PTP_Listener"/>
+    <bean id="ps_listener" class="spring.jms.activemq.listener.PS_Listener"/>
+    <!-- 5.系统监听器 -->
+    <bean id="queue_listener" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+            <property name="connectionFactory" ref="connectionFactory"/>
+            <property name="destination" ref="queueDestination"/>
+            <property name="messageListener" ref="ptp_listener"/>
+            <property name="pubSubDomain" value="false" />
+    </bean>
+    <bean id="topic_listener" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destination" ref="topicDestination"/>
+        <property name="messageListener" ref="ps_listener"/>
+        <property name="pubSubDomain" value="true" />
+    </bean>
+</beans>

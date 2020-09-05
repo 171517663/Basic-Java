@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="daoImpl" class="com.spring.aop.DaoImpl"/>
+    <bean id="before"  class="com.spring.aop.BeforeAction"/>
+    <bean id="after"  class="com.spring.aop.AfterAction"/>
+
+    <aop:config>
+        <aop:pointcut id="daoServicePoint" expression="execution(* com.spring.aop.DaoImpl.*(..))"/>
+        <aop:advisor advice-ref="before" pointcut-ref="daoServicePoint"/>
+        <aop:advisor advice-ref="after" pointcut-ref="daoServicePoint"/>
+    </aop:config>
+
+</beans>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="hello" class="com.test.spring.Hello">
+        <property name="name" value="xixi"/>
+    </bean>
+    <!-- spring的alias标签：别名
+    Hello hel = (Hello) context.getBean("hello");
+    =====等价于
+    Hello hel = (Hello) context.getBean("hellqAlias");
+    -->
+    <alias name="hello" alias="hellqAlias"/>
+
+    <!--name属性可用空格，逗号，分号分割-->
+    <bean id="user" class="com.test.spring.User" name="userAlias,userAlias2 userAlias3;userAlias4">
+        <constructor-arg index="0" value="heihei"/>
+    </bean>
+
+<!--nihao:ctrl+/-->
+
+    <!--import标签    -->
+    <import resource="compliactionContext.xml"/>
+
+
+    <!--自动装配
+    1.byName  set方法set后面的字符串作为id来装配
+    2.buType bean文件中class对象唯一
+    -->
+    <bean id="hi" class="com.test.spring.Hi" autowire="byName"/>
+
+</beans>

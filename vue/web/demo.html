@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--1.导入vue.js-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <todo>
+        <todo-title slot="todo-title" v-bind:title="title"></todo-title>
+        <todo-items slot="todo-items"
+                    v-for="(item,i) in todoItems"
+                    v-bind:item="item" v-bind:index="i"
+                    v-on:remove="removeItem(i)">
+        </todo-items>
+    </todo>
+</div>
+<script>
+    //slot 插槽 这个组件要定义在前面不然出不来数据
+    Vue.component("todo", {
+        template: '<div>\
+                <slot name="todo-title"></slot>\
+                <ul>\
+                <slot name="todo-items"></slot>\
+                </ul>\
+                <div>'
+    });
+    Vue.component("todo-title", {
+        //属性
+        props: ['title'],
+        template: '<div>{{title}}</div>'
+    });
+    Vue.component("todo-items", {
+        props: ['item', 'index'],
+        template: '<li>{{index}}-{{item}}<button style="margin: 5px" @click="remove">删除</button></li>',
+        methods: {
+            remove: function (index) {
+                // this.$emit('事件',参数) 自定义事件分发（远程调用方法）
+                this.$emit('remove', index)
+            }
+        },
+    });
+    let vm = new Vue({
+        el: "#app",
+        data: {
+            //标题
+            title: "图书馆系列图书",
+            //列表
+            todoItems: ['三国演义', '红楼梦', '西游记', '水浒传']
+        },
+        methods: {
+            removeItem: function (index) {
+                // 一次删除一个元素
+                this.todoItems.splice(index, 1)
+                console.log("删除了" + this.todoItems[index] + "OK")
+            }
+        },
+    });
+</script>
+</body>
+</html>

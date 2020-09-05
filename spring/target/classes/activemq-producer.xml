@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!-- 1.配置能够产生connection的connectionfactory，由JMS对应的服务厂商提供 -->
+    <amq:connectionFactory id="amqConnectionFactory"
+                           userName="admin" password="admin"
+                           brokerURL="tcp://127.0.0.1:61616"
+    />
+    <!-- 2.配置spring管理真正connectionfactory的connectionfactory，相当于spring对connectionfactory的一层封装 -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="amqConnectionFactory"/>
+        <property name="sessionCacheSize" value="5"/>
+    </bean>
+
+    <!-- 配置生产者 -->
+    <!-- 3.发布订阅模式 -->
+    <bean id="jmsTopicTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!-- 注入缓存连接工厂 -->
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <!-- 指定是否为发布订阅模式 -->
+        <property name="pubSubDomain" value="true"/>
+    </bean>
+
+    <!-- 4.点对点模式 -->
+    <bean id="jmsQueueTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="pubSubDomain" value="false"/>
+    </bean>
+
+<!--    &lt;!&ndash; 配置destination &ndash;&gt;-->
+<!--    &lt;!&ndash; 队列目的地 &ndash;&gt;-->
+<!--    <bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">-->
+<!--        <constructor-arg value="spring-queue"/>-->
+<!--    </bean>-->
+<!--    &lt;!&ndash; 话题目的地 &ndash;&gt;-->
+<!--    <bean id="itemAddTopic" class="org.apache.activemq.command.ActiveMQTopic">-->
+<!--        <constructor-arg value="item-add-topic"/>-->
+<!--    </bean>-->
+</beans>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<div id="vue">
+    <p>currenttime1 {{currenttime1()}}</p>
+    <p>currenttime2 {{currenttime2}}</p>
+
+</div>
+
+<div>
+    <p>章节列表</p>
+    <ul>
+        <li>java1</li>
+        <li>java2</li>
+        <li>java3</li>
+    </ul>
+</div>
+
+<div id="app">
+    <todo>
+        <todo-title slot="todo-title" :comptitle="mytitle"></todo-title>
+        <todo-items slot="todo-items" v-for="(item,i) in items" v-bind:compitem="item"
+                    :compindex="i" v-on:myremove="removeitem(i)"></todo-items>
+    </todo>
+</div>
+
+<!--导入vue-->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    var vm = new Vue({
+        el: '#vue',
+        methods: {
+            currenttime1: function () {
+                return Date.now();
+            }
+        },
+        computed: {//computed和methods功能类似，currenttime2的值在浏览器中缓存起来了，没有数据更新不会再次调用
+            currenttime2: function () {
+                return Date.now();
+            }
+        }
+    })
+
+        // <div>
+        //     <p>章节列表</p>
+        //     <ul>
+        //         <li>java1</li>
+        //         <li>java2</li>
+        //         <li>java3</li>
+        //     </ul>
+        // </div>
+    Vue.component("todo",{
+        template: '<div>\
+                 <slot name="todo-title"></slot>\
+                 <ul>\
+                     <slot name="todo-items"></slot>\
+                 </ul>\
+             </div>'
+    });
+    Vue.component("todo-title",{
+        props: ['comptitle'],
+        template: '<p>{{comptitle}}</p>>'
+    });
+    Vue.component("todo-items",{
+        props: ['compitem','compindex'],
+        template: '<li>{{compindex}}---{{compitem}} <button @click="remove1">删除</button></li>>',
+        methods: {
+            remove1: function (compindex) {
+                // this.$emit('事件',参数) 自定义事件分发（远程调用方法）
+                this.$emit('myremove', compindex)
+            }
+        }
+    });
+    var lable = new Vue({
+        el: '#app',
+        data: {
+            mytitle: "xiaohuangdeshugui",
+            items: ['java', 'c', 'computer']
+        },
+        methods: {
+            removeitem: function (index) {
+                this.items.splice(index, 1)//一次删除一个元素
+            }
+        }
+    })
+</script>
+
+</body>
+</html>
