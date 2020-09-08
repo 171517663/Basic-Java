@@ -16,25 +16,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/../searching-jar" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../searching-jar" recursive="false" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../idea_pojie/springbootproject/com.huawei.oms.app.searching.core-2.0-SNAPSHOT.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-core:8.6.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queryparser:8.6.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.lucene:lucene-queries:8.6.0" level="project" />
